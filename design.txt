@@ -1,5 +1,0 @@
-c++
-
-
-world as 2d array of blocks, generated via perlin noise file
-
