@@ -5,9 +5,11 @@
 class World;
 
 class Bot {
-  double x;
-  double y;
-  void update();
-  void draw(SDL_Surface *screen, World *world);
+  public:
+    Bot(int x, int y);
+    double x;
+    double y;
+    void update();
+    void draw(SDL_Surface *screen, World *world);
 };
 #endif /* BOT_H */

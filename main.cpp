@@ -71,6 +71,7 @@ int main() {
     
     while(true) {
       clearScreen(screen);
+      world->update();
       world->draw(screen);
       updateScreen(screen);
       handleKeyEvent(&event);

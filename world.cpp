@@ -55,6 +55,7 @@ World::World(int w, int h) {
   
   // setting up viewer for user to view world
   viewer = new Viewer(this);
+  generateBots();
   
 }
 
@@ -89,13 +90,14 @@ void World::setAllBlocks(BlockType type) {
 }
 
 void World::generateBots() {
-  //
+  bots.push_back(new Bot(50, 50));
 }
 
 void World::draw(SDL_Surface *screen) {
   Color blue = {0, 0, 255};
   Color red = {255, 0, 0};
   Color green = {255, 0, 0};
+  // drawing the world
   for(int i = int(viewer->x); i < width; i++) {
     if(i > viewer->width) {
       break;
@@ -107,8 +109,16 @@ void World::draw(SDL_Surface *screen) {
       drawRect(screen, (i - viewer->x) * zoom, (j - viewer->y) * zoom, zoom, zoom, blockColor(grid[i][j]));
     }
   }
+  for(int i = 0; i < bots.size(); i++) {
+    bots[i]->draw(screen, this);
+  }
 }
 
+void World::update() {
+  for(int i = 0; i < bots.size(); i++) {
+    bots[i]->update();
+  }
+}
 
 Viewer::Viewer(World *w) {
   world = w;

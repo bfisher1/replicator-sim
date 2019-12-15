@@ -57,5 +57,6 @@ class World
     void createStoneBlocks();
     void createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth);
     void generateBots();
+    void update();
 };
 #endif
