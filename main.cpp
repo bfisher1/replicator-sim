@@ -2,10 +2,11 @@
 #include <math.h>
 #include "graphics.h"
 #include "world.hpp"
-#define WIDTH 640
-#define HEIGHT 480
+#define WIDTH 900
+#define HEIGHT 700
 #define DEPTH 32
 
+World *world;
 
 void handleKeyUpEvent(SDL_Event *event) {
   switch(event->key.keysym.sym) {
@@ -13,12 +14,13 @@ void handleKeyUpEvent(SDL_Event *event) {
       exit(0);
       break;
     default:
+      world->viewer->handleKeyUpEvent(event);
       break;
   }
 }
 
 void handleKeyDownEvent(SDL_Event *event) {
-    //
+  world->viewer->handleKeyDownEvent(event);
 }
 
 void handleKeyEvent(SDL_Event *event) {
@@ -35,6 +37,10 @@ void handleKeyEvent(SDL_Event *event) {
         break;
     }
   }
+}
+
+void clearScreen(SDL_Surface *screen) {
+  drawRect(screen, 0, 0, WIDTH, HEIGHT, (Color) {0, 0, 0});
 }
 
 int main() {
@@ -61,11 +67,12 @@ int main() {
 
     
 
-    World *w = new World(256, 256);
+    world = new World(256, 256);
     
     while(true) {
+      clearScreen(screen);
+      world->draw(screen);
       updateScreen(screen);
-      w->draw(screen);
       handleKeyEvent(&event);
     }
 }

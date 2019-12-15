@@ -1,0 +1,59 @@
+Battery = BatteryPrinter(Zinc, Carbon, Paper, IronCap, Cobalt, Graphite)
+
+
+Bot = Weld(Battery, Frame, Motor, Wheels, Camera, ChemicalReader, Computer)
+BuilderBot = Weld(Bot, Arm(2))
+
+Battery
+	Zinc
+	Carbon
+	Paper
+	IronCap
+	Cobalt
+	Graphite
+Frame
+	MetalPole (12)
+	MetalSiding (6)
+
+	Motor (8)
+	Wheels (8)
+		Tire
+			RubberStrip
+				Rubber
+		IronDisc
+			Iron
+	Camera
+		Glass
+			Sand
+		CircuitBoard
+			Silicon
+			Copper
+	ChemicalReader
+		CopperWire
+		CircuitBoard
+	Computer
+		CircuitBoard (5)
+  BuilderBot
+	Arm (2)
+		ArmStick (2)
+		Joint (3)
+		Hand (1)
+			Finger (5)
+				SmallMetalStick (3)
+				SmallJoint (3)
+				RubberGripper (1)
+			IronDisc(1)
+  MinerBot
+	Drill
+		LargeIronPiece (1)
+		LargeMotor (1)
+	StorageChest
+		MediumMetalPole (12)
+		MediumMetalSiding (6)
+---
+BatteryPrinter
+
+MetalPrinter(mold)
+BoardPrinter()
+Saw()
+

@@ -1,9 +1,14 @@
 #include "world.hpp"
 #include "perlin.h"
+#include "util.h"
 
 // todo, centralize this here
+#define MIN_X 0
+#define MIN_Y 0
 #define WIDTH 640
 #define HEIGHT 480
+#define MAX_ZOOM 20
+#define MIN_ZOOM 1
 
 int seed = DEFAULT_SEED;
 int getNextSeed() {
@@ -30,6 +35,7 @@ Color blockColor(Block block) {
   }
 }
 
+
 World::World(int w, int h) {
   width = w;
   height = h;
@@ -47,6 +53,8 @@ World::World(int w, int h) {
   createResources(BlockType::sand, BlockType::air, .50, beachSeed, .08, 4);
   createResources(BlockType::water, BlockType::sand, .65, beachSeed, .08, 4);
   
+  // setting up viewer for user to view world
+  viewer = new Viewer(this);
   
 }
 
@@ -80,13 +88,82 @@ void World::setAllBlocks(BlockType type) {
   }
 }
 
+void World::generateBots() {
+  //
+}
+
 void World::draw(SDL_Surface *screen) {
   Color blue = {0, 0, 255};
   Color red = {255, 0, 0};
   Color green = {255, 0, 0};
-  for(int i = 0; i < width; i++) {
-    for(int j = 0; j < height; j++) {
-      drawRect(screen, i * zoom, j * zoom, zoom, zoom, blockColor(grid[i][j]));
+  for(int i = int(viewer->x); i < width; i++) {
+    if(i > viewer->width) {
+      break;
     }
+    for(int j = int(viewer->y); j < height; j++) {
+      if(j > viewer->height) {
+        break;
+      }
+      drawRect(screen, (i - viewer->x) * zoom, (j - viewer->y) * zoom, zoom, zoom, blockColor(grid[i][j]));
+    }
+  }
+}
+
+
+Viewer::Viewer(World *w) {
+  world = w;
+  x = 0;
+  y = 0;
+}
+
+void Viewer::handleKeyUpEvent(SDL_Event *event) {
+  switch(event->key.keysym.sym) {
+    case SDLK_LEFTBRACKET:
+      if(!onZoom) {
+        onZoom = true;
+        if(world->zoom > MIN_ZOOM) {
+          world->zoom -= 1;
+        }
+      }
+      break;
+    case SDLK_RIGHTBRACKET:
+      if(!onZoom) {
+        onZoom = true;
+        if(world->zoom < MAX_ZOOM) {
+          world->zoom += 1;
+        }
+      }
+    default:
+      break;
+  }
+}
+void Viewer::handleKeyDownEvent(SDL_Event *event) {
+  switch(event->key.keysym.sym) {
+    case SDLK_LEFTBRACKET:
+    case SDLK_RIGHTBRACKET:
+      onZoom = false;
+      break;
+    case SDLK_UP:
+      if(y > MIN_Y) {
+        y -= speed;
+      }
+      break;
+    case SDLK_DOWN:
+      if(y < HEIGHT) {
+        y += speed;
+      }
+      break;
+    case SDLK_LEFT:
+      if(x > MIN_X) {
+        x -= speed;
+      }
+      break;
+    case SDLK_RIGHT:
+      if(x < WIDTH) {
+        x += speed;
+      }
+      break;
+    default:
+      break;
   }
 }
