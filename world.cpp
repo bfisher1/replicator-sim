@@ -90,7 +90,7 @@ void World::setAllBlocks(BlockType type) {
 }
 
 void World::generateBots() {
-  bots.push_back(new Bot(50, 50));
+  bots.push_back(new Bot(50, 50, this));
 }
 
 void World::draw(SDL_Surface *screen) {
@@ -110,7 +110,7 @@ void World::draw(SDL_Surface *screen) {
     }
   }
   for(int i = 0; i < bots.size(); i++) {
-    bots[i]->draw(screen, this);
+    bots[i]->draw(screen);
   }
 }
 

@@ -2,6 +2,7 @@
 #include <math.h>
 #include "graphics.h"
 #include "world.hpp"
+#include "resourceGraph.hpp"
 #define WIDTH 900
 #define HEIGHT 700
 #define DEPTH 32
@@ -68,7 +69,10 @@ int main() {
     
 
     world = new World(256, 256);
-    
+
+    ResourceGraph *resources = new ResourceGraph("resources.txt");
+    resources->print();
+
     while(true) {
       clearScreen(screen);
       world->update();

@@ -1,59 +1,108 @@
-Battery = BatteryPrinter(Zinc, Carbon, Paper, IronCap, Cobalt, Graphite)
+Raw = {Zinc, Tree, Iron, Nickel, Silicon}
+
+Molds = {IronCapMold, MetalPoleMold, MetalSidingMold, TireMold, DiscMold, SmallMetalBallMold, SmallMetalStickMold, RubberGripperMold, DrillMold, GearMold}
+
+Producers = {Smelter, Injector}
+
+Actions {
+	Tap:
+		Precond: {isMinerBot, blockIsTree}
+		Effect: {blockIsDry, gain2Sap}
+		Duration = 90
+	Smelt:
+	  Precond: {isBuilderBot, haveAllMaterials, blockIsSmelter}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 15
+	Inject:
+		Precond: {isBuilderBot, haveAllMaterials, blockIsInjector}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 15
+	Assemble:
+		Precond: {isBuilderBot, haveAllMaterials}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 15
+	Weld:
+		Precond: {isBuilderBot, haveAllMaterials}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 10
+	Drill:
+		Precond: {isMinerBot}
+		Effect: {blockDestroyed, blockAddedToInv}
+		Duration = 15
+	Dry:
+		Precond: {isBuilderBot, blockIsRubber}
+		Effect: {blockIsDry}
+		Duration = 30
+	BatteryPrinter:
+	  Precond: {blockIsBatteryPrinter}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 15
+	PaperMill:
+	  Precond: {blockIsPaperMill}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 15
+	Cut:
+	  Precond: {isMinerBot, blockIsTree}
+		Effect: {gainWood}
+		Duration = 15
+	Assemble:
+	  Precond: {isBuilderBot}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 10
+	CircuitBoardPrinter:
+	  Precond: {blockIsCircuitBoardPrinter}
+		Effect: {loseMaterials, gainProducts}
+		Duration = 12
+}
+
+Resource Transformations:
+
+Rubber = Dry(Sap)
+Sap = Tap(Tree)
+Glass = Smelt(Sand)
+Magnet = Smelt(Nickel, Iron)
+
+IronCap (5) = Inject(Iron, IronCapMold)
+MetalPole = Inject(Iron, MetalPoleMold)
+MetalSiding = Inject(Iron (2), MetalSidingMold)
+Tire = Inject(Rubber, TireMold);
+IronDisc = Inject(Iron, DiscMold)
+SmallMetalBall = Inject(Iron, SmallMetalBallMold)
+SmallMetalStick = Inject(Iron, SmallMetalStickMold)
+RubberGripper = Inject(Rubber, RubberGripperMold)
+Drill = Inject(Iron (10), DrillMold);
+Gear = Inject(Iron, GearMold);
 
 
-Bot = Weld(Battery, Frame, Motor, Wheels, Camera, ChemicalReader, Computer)
-BuilderBot = Weld(Bot, Arm(2))
+Battery = BatteryPrinter(Zinc, Paper, IronCap)
+Paper = PaperMill(Wood)
+Wood = Cut(Tree)
 
-Battery
-	Zinc
-	Carbon
-	Paper
-	IronCap
-	Cobalt
-	Graphite
-Frame
-	MetalPole (12)
-	MetalSiding (6)
 
-	Motor (8)
-	Wheels (8)
-		Tire
-			RubberStrip
-				Rubber
-		IronDisc
-			Iron
-	Camera
-		Glass
-			Sand
-		CircuitBoard
-			Silicon
-			Copper
-	ChemicalReader
-		CopperWire
-		CircuitBoard
-	Computer
-		CircuitBoard (5)
-  BuilderBot
-	Arm (2)
-		ArmStick (2)
-		Joint (3)
-		Hand (1)
-			Finger (5)
-				SmallMetalStick (3)
-				SmallJoint (3)
-				RubberGripper (1)
-			IronDisc(1)
-  MinerBot
-	Drill
-		LargeIronPiece (1)
-		LargeMotor (1)
-	StorageChest
-		MediumMetalPole (12)
-		MediumMetalSiding (6)
----
-BatteryPrinter
 
-MetalPrinter(mold)
-BoardPrinter()
-Saw()
+Frame = Weld(MetalPole (12), MetalSiding (6))
+
+CircuitBoard = CircuitBoardPrinter(Silicon, Copper, Glass)
+
+Motor = Assemble(IronCap, Magnet, CircuitBoard)
+
+Wheel = Assemble(IronDisc, Tire)
+
+Camera = Weld(Glass, CircuitBoard)
+
+ChemicalReader = Weld(CopperWire, CircuitBoard)
+
+Computer = Weld(CircuitBoard(5))
+
+Joint = Assemble(SmallMetalStick (2), SmallIronBall)
+Finger = Weld(SmallMetalStick (3), Joint (3), RubberGripper (1))
+Hand = Weld(IronDisc, Finger (5))
+Arm = Weld(ArmStick (2), Joint(2), Hand)
+
+StorageChest = Weld(MetalPole (6), MetalSiding (3));
+LargeMotor = Assemble(Motor (5), Gear (5))
+
+Bot = Weld(Battery, Frame, Motor (8), Wheel (8), Camera, ChemicalReader, Computer, StorageChest)
+MinerBot = Weld(LargeMotor, Drill, Bot)
+BuilderBot = Weld(Bot, Arm(2), StorageChest)
 
