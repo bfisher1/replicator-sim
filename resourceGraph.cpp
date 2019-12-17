@@ -212,8 +212,5 @@ void ResourceGraph::print() {
     }
     rsrcIt++;
   }
-  // auto it = 
-  // for()
-  // cout << endl;
 }
 

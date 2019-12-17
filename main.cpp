@@ -69,6 +69,7 @@ int main() {
     
 
     world = new World(256, 256);
+    world->generateBots();
 
     ResourceGraph *resources = new ResourceGraph("resources.txt");
     resources->print();

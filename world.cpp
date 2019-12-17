@@ -30,6 +30,8 @@ Color blockColor(Block block) {
       return (Color) {255, 128, 0};
     case BlockType::sand:
       return (Color) {255, 255, 223};
+    case BlockType::unknown:
+      return (Color) {0, 0, 0};
     default:
       return (Color) {0, 0, 0};
   }
@@ -55,7 +57,6 @@ World::World(int w, int h) {
   
   // setting up viewer for user to view world
   viewer = new Viewer(this);
-  generateBots();
   
 }
 

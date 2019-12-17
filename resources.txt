@@ -2,7 +2,7 @@ Raw = {Zinc, Tree, Iron, Nickel, Silicon}
 
 Molds = {IronCapMold, MetalPoleMold, MetalSidingMold, TireMold, DiscMold, SmallMetalBallMold, SmallMetalStickMold, RubberGripperMold, DrillMold, GearMold}
 
-Producers = {Smelter, Injector}
+Producers = {Smelter, Injector, BatteryPrinter, PaperMill, CircuitBoardPrinter}
 
 Actions {
 	Tap:
@@ -10,11 +10,11 @@ Actions {
 		Effect: {blockIsDry, gain2Sap}
 		Duration = 90
 	Smelt:
-	  Precond: {isBuilderBot, haveAllMaterials, blockIsSmelter}
+	  Precond: {isBuilderBot, haveAllMaterials, blockIsSmelter, blockHasFuel}
 		Effect: {loseMaterials, gainProducts}
 		Duration = 15
 	Inject:
-		Precond: {isBuilderBot, haveAllMaterials, blockIsInjector}
+		Precond: {isBuilderBot, haveAllMaterials, blockIsInjector, blockHasFuel}
 		Effect: {loseMaterials, gainProducts}
 		Duration = 15
 	Assemble:

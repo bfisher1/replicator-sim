@@ -18,7 +18,8 @@ enum BlockType {
   coal,
   copper,
   air,
-  sand
+  sand,
+  unknown
 };
 
 struct Block {
