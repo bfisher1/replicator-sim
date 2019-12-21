@@ -3,6 +3,8 @@
 #include <vector>
 #include "graphics.h"
 #include "bot.hpp"
+#include <string>
+#include "loc.hpp"
 #define DEFAULT_ZOOM 3
 #define DEFAULT_SEED 1
 #define DEFAULT_VIEWER_SPEED 10
@@ -59,5 +61,7 @@ class World
     void createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth);
     void generateBots();
     void update();
+    bool isCrossable(BlockType type);
+    string blockStrAt(Loc);
 };
 #endif

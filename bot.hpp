@@ -21,7 +21,7 @@ class Bot {
     void update();
     void draw(SDL_Surface *screen);
     void updateBlocksInVision();
-    void createRoute(Loc target);
+    vector<Loc> *createRoute(Loc target);
 
     // mind
     InnerWorld *innerWorld;

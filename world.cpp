@@ -37,6 +37,36 @@ Color blockColor(Block block) {
   }
 }
 
+string blockStr(BlockType type) {
+  switch(type) {
+    case BlockType::stone:
+      return "Stone";
+    case BlockType::water:
+      return "Water";
+    case BlockType::air:
+      return "Air";
+    case BlockType::coal:
+      return "Coal";
+    case BlockType::copper:
+      return "Copper";
+    case BlockType::sand:
+      return "Sand";
+    case BlockType::unknown:
+      return "Unknown";
+    default:
+      return "???";
+  }
+}
+
+bool World::isCrossable(BlockType type) {
+  switch(type) {
+    case BlockType::air:
+      return true;
+    default:
+      return false;
+  }
+}
+
 
 World::World(int w, int h) {
   width = w;
@@ -177,4 +207,8 @@ void Viewer::handleKeyDownEvent(SDL_Event *event) {
     default:
       break;
   }
+}
+
+string World::blockStrAt(Loc loc) {
+  return blockStr(grid[(int) loc.x][(int) loc.y].type);
 }

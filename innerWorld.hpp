@@ -2,6 +2,7 @@
 #define INNER_WORLD_H
 #include "world.hpp"
 #include "bot.hpp"
+#include "loc.hpp"
 class World;
 class Bot;
 
@@ -12,6 +13,10 @@ class InnerWorld {
     Bot *self;
     InnerWorld(World *world, Bot *bot);
     void draw(SDL_Surface *screen);
+    Loc botLoc();
+    bool isCrossable(Loc loc);
+    Loc target;
+    vector<Loc> *targetPath;
     // lists of resources
 };
 

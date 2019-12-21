@@ -16,4 +16,13 @@ InnerWorld::InnerWorld(World *world, Bot *b) {
 void InnerWorld::draw(SDL_Surface *screen) {
   map->draw(screen);
   drawRect(screen, self->x * map->zoom, self->y * map->zoom, map->zoom, map->zoom, (Color) {255, 0, 0});
+  drawRect(screen, target.x * map->zoom, target.y * map->zoom, map->zoom, map->zoom, (Color) {0, 0, 255});
+}
+
+Loc InnerWorld::botLoc() {
+  return Loc(self->x, self->y);
+}
+
+bool InnerWorld::isCrossable(Loc loc) {
+  return map->isCrossable(map->grid[(int) loc.x][(int) loc.y].type);
 }

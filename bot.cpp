@@ -3,7 +3,8 @@
 void Bot::update() {
   x += .1;
   updateBlocksInVision();
-  createRoute(Loc(54, 54));
+  innerWorld->target = Loc(54, 54);
+  innerWorld->targetPath = createRoute(innerWorld->target);
   //world->grid[(int) x][(int) y].type = BlockType::water;
 }
 void Bot::draw(SDL_Surface *screen) {
@@ -27,6 +28,6 @@ Bot::Bot(int sx, int sy, World *w) {
   innerWorld = new InnerWorld(world, this);
 }
 
-void Bot::createRoute(Loc target) {
-  createNaiveDjikstraRoute(innerWorld, target);
+vector<Loc> *Bot::createRoute(Loc target) {
+  return createNaiveDjikstraRoute(innerWorld, target);
 }

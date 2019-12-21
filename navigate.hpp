@@ -1,6 +1,7 @@
 #ifndef NAVIGATE_H
 #define NAVIGATE_H
 #include "loc.hpp"
+#include "world.hpp"
 #include "innerWorld.hpp"
 #include <vector>
 

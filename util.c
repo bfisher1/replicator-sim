@@ -1,5 +1,11 @@
+double max(double x, double y) {
+  if(x > y)
+    return x;
+  return y;
+}
 
-
-double max(double x, double y);
-
-double min(double x, double y);
+double min(double x, double y) {
+  if(x < y)
+    return x;
+  return y;
+}
