@@ -1,5 +1,5 @@
 #include "loc.hpp"
-#include "util.h"
+#include "util.hpp"
 #include <stdio.h>
 #include <iostream>
 #include <string>

@@ -4,7 +4,7 @@
 #include "world.hpp"
 #include "loc.hpp"
 #include "navigate.hpp"
-#include "innerWorld.hpp"
+#include <time.h> 
 #define BOT_VISION_RANGE 10;
 class World;
 struct Block;
@@ -17,6 +17,8 @@ class Bot {
     World *world;
     double x;
     double y;
+    double dir = 0;
+    double vel = 0;
     int visionRange;
     void update();
     void draw(SDL_Surface *screen);

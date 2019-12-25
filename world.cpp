@@ -1,6 +1,6 @@
 #include "world.hpp"
 #include "perlin.h"
-#include "util.h"
+#include "util.hpp"
 
 // todo, centralize this here
 #define MIN_X 0

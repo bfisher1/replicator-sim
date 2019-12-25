@@ -3,9 +3,11 @@
 #include "graphics.h"
 #include "world.hpp"
 #include "resourceGraph.hpp"
+#include "util.hpp"
 #define WIDTH 900
 #define HEIGHT 700
 #define DEPTH 32
+#include <iostream>
 
 World *world;
 
@@ -45,40 +47,31 @@ void clearScreen(SDL_Surface *screen) {
 }
 
 int main() {
-    SDL_Surface *screen;
-    SDL_Event event;
-    
+  SDL_Surface *screen;
+  SDL_Event event;
+  
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0 ) exit(EXIT_FAILURE);
-   
-    if (!(screen = SDL_SetVideoMode(WIDTH, HEIGHT, DEPTH, SDL_RESIZABLE|SDL_HWSURFACE)))
-    {
-        SDL_Quit();
-        exit(EXIT_FAILURE);
-    }
-    
-    // int animBankLen;
-    // Anim **animBank = loadAnims(screen, &animBankLen);
+  if (SDL_Init(SDL_INIT_VIDEO) < 0 ) exit(EXIT_FAILURE);
+  
+  if (!(screen = SDL_SetVideoMode(WIDTH, HEIGHT, DEPTH, SDL_RESIZABLE|SDL_HWSURFACE)))
+  {
+      SDL_Quit();
+      exit(EXIT_FAILURE);
+  }
 
-    // if(!animBank) {
-    //     SDL_Quit();
-    //     fprintf(stderr, "Couldn't load animation\n");
-    //     exit(EXIT_FAILURE);
-    // }
+  world = new World(256, 256);
+  //world->generateBots();
 
-    
+  ResourceGraph *resources = new ResourceGraph("resources.txt");
+  resources->print();
 
-    world = new World(256, 256);
-    world->generateBots();
+  // MAKE EVENT BUS OF TIMERS, things subscribe to world
 
-    ResourceGraph *resources = new ResourceGraph("resources.txt");
-    resources->print();
-
-    while(true) {
-      clearScreen(screen);
-      world->update();
-      world->draw(screen);
-      updateScreen(screen);
-      handleKeyEvent(&event);
-    }
+  while(true) {
+    clearScreen(screen);
+    world->update();
+    world->draw(screen);
+    updateScreen(screen);
+    handleKeyEvent(&event);
+  }
 }

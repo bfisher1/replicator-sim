@@ -1,9 +1,29 @@
 #include "bot.hpp"
+#include <math.h>
+#include "util.hpp"
+#include <iostream>
+#define TURN_SENSITIVITY 1.62
+
+void wanderUpdateMove(Bot *bot) {
+  bot->vel = .2;
+  bot->dir += TURN_SENSITIVITY * (randNorm() - .5);
+}
+
+void move(Bot *bot) {
+  bot->x += bot->vel * cos(bot->dir);
+  bot->y += bot->vel * sin(bot->dir);
+}
 
 void Bot::update() {
-  x += .1;
+  time_t now;
+  time(&now);
+  if(now > innerWorld->lastUpdate) {
+    innerWorld->lastUpdate = now;
+    wanderUpdateMove(this);
+  }
+  move(this);
   updateBlocksInVision();
-  innerWorld->target = Loc(54, 54);
+  innerWorld->target = Loc(80, 120);
   innerWorld->targetPath = createRoute(innerWorld->target);
   //world->grid[(int) x][(int) y].type = BlockType::water;
 }
@@ -31,3 +51,8 @@ Bot::Bot(int sx, int sy, World *w) {
 vector<Loc> *Bot::createRoute(Loc target) {
   return createNaiveDjikstraRoute(innerWorld, target);
 }
+
+/*
+wander()
+search() = goto stones, then wander and mine
+*/

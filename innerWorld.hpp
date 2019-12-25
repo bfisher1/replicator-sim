@@ -3,6 +3,7 @@
 #include "world.hpp"
 #include "bot.hpp"
 #include "loc.hpp"
+#include "innerWorld.hpp"
 class World;
 class Bot;
 
@@ -17,6 +18,7 @@ class InnerWorld {
     bool isCrossable(Loc loc);
     Loc target;
     vector<Loc> *targetPath;
+    time_t lastUpdate;
     // lists of resources
 };
 

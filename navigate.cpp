@@ -6,6 +6,9 @@
 #include <iostream>
 #include <string>
 
+// for diagonal distances
+#define SQRT_2 1.4142135
+
 class Node;
 
 class Node {
@@ -13,6 +16,7 @@ class Node {
     Node *prev;
     double dist;
     Loc loc;
+    int pos;
     Node(Loc l) {
       loc = l;
     }
@@ -28,7 +32,7 @@ struct CmpNodePtrs
 {
   bool operator()(const Node* a, const Node* b) const
   {
-    return a->dist < b->dist;
+    return a->dist > b->dist;
   }
 };
 
@@ -108,7 +112,6 @@ class Graph {
 
 };
 
-
 Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal) {
   Graph *graph = new Graph();
   Loc src = Loc(innerWorld->self->x, innerWorld->self->y);
@@ -165,7 +168,6 @@ Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal)
   //cout << "map size " << graph->neighbors->size() << endl;
   
   // add the nodes and the edges to the graph
-  // TODO: eventually add diagonal edges
   for(int j = 0; j < width; j++) {
     for(int i = 0; i < height; i++) {
       //graph->magic();
@@ -184,11 +186,45 @@ Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal)
         if(j + 1 < width && (*(*crossableNodes)[j + 1])[i] != NULL) {
           graph->addEdge((*(*crossableNodes)[j])[i], (*(*crossableNodes)[j + 1])[i], 1);
         }
+
+        //diagonal edges
+        // TODO Check that other blocks normal to diagonal are crossable too, otherwise can go thru diagonal
+        if(i - 1 >= 0 && j - 1 >= 0 && (*(*crossableNodes)[j - 1])[i - 1] != NULL) {
+          //graph->magic();
+          graph->addEdge((*(*crossableNodes)[j])[i], (*(*crossableNodes)[j - 1])[i - 1], SQRT_2);
+          //cout << "edge added" << endl;
+        }
+        if(i + 1 < height && j + 1 < width && (*(*crossableNodes)[j + 1])[i + 1] != NULL) {
+          graph->addEdge((*(*crossableNodes)[j])[i], (*(*crossableNodes)[j + 1])[i + 1], SQRT_2);
+        }
+        if(i + 1 < height && j - 1 >= 0 && (*(*crossableNodes)[j - 1])[i + 1] != NULL) {
+          graph->addEdge((*(*crossableNodes)[j])[i], (*(*crossableNodes)[j - 1])[i + 1], SQRT_2);
+        }
+        if(i - 1 >= 0 && j + 1 < width && (*(*crossableNodes)[j + 1])[i - 1] != NULL) {
+          graph->addEdge((*(*crossableNodes)[j])[i], (*(*crossableNodes)[j + 1])[i - 1], SQRT_2);
+        }
       }
     }
   }
 
   return graph;
+}
+
+
+Node *popMinNode(vector<Node *> *queue) {
+  if(queue->size() == 0) {
+    return NULL;
+  }
+  int idx = 0;
+  Node *min = (*queue)[0];
+  for(int i = 0; i < queue->size(); i++) {
+    if( (*queue)[i]->dist < min->dist) {
+      min = (*queue)[i];
+      idx = i;
+    }
+  }
+  queue->erase(queue->begin() + idx);
+  return min;
 }
 
 /*
@@ -198,18 +234,17 @@ Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal)
 vector<Loc> *djikstrasAlgorithm(Graph *graph, Node* start, Node *target) {
   vector<Loc> *points = new vector<Loc>();
   //return points;
-  priority_queue<Node *, vector<Node*>, CmpNodePtrs> queue;
+  vector<Node *> *queue = new vector<Node *>();
   for(int i = 0; i < graph->nodes.size(); i++) {
     graph->nodes[i]->prev = NULL;
     graph->nodes[i]->dist = INFINITY;
-    queue.push(&(*graph->nodes[i]));
+    queue->push_back(&(*graph->nodes[i]));
   }
 
   start->dist = 0;
 
-  while(!queue.empty()) {
-    const Node *u = queue.top();
-    queue.pop();
+  while(queue->size() > 0) {
+    const Node *u = popMinNode(queue);
 
     cout << "U: " << ((Node *) u)->loc.toString() << " neighbors = " << graph->getNeighbors(u)->size() << endl;
 
@@ -217,26 +252,28 @@ vector<Loc> *djikstrasAlgorithm(Graph *graph, Node* start, Node *target) {
     for(int i = 0; i < neighbors->size(); i++) {
       Edge *neighborEdge = (*neighbors)[i];
       double alt = u->dist + neighborEdge->cost;
+      cout << "----ALT " << alt << " = "  << u->dist << " + " << neighborEdge->cost << "; " << neighborEdge->dest->toString() << endl;
       if(alt < neighborEdge->dest->dist) {
         neighborEdge->dest->dist = alt;
+        //queue.updateDist(neighborEdge->dest, neighborEdge->dest->dist);
         cout << "ALT " << neighborEdge->dest->loc.toString() << " <- " << ((Node *)u)->loc.toString() << endl;
         neighborEdge->dest->prev = (Node *) u;
       }
     }
 
-    // if(u == target) {
+    if(u == target) {
       
-    //   for(Node *n = (Node *) u; n != NULL; n = n->prev) {
-    //     points->push_back(n->loc);
-    //   }
-    //   cout << "Points:" <<endl;
-    //   for(int i = 0; i < points->size(); i++) {
-    //     cout << (*points)[i].toString() << " ";
-    //   }
-    //   cout << endl;
-    //   cout << "TAARGET: " << points->size() << " " << (u == NULL) << endl;
-    //   return points;
-    // }
+      for(Node *n = (Node *) u; n != NULL; n = n->prev) {
+        points->push_back(n->loc);
+      }
+      cout << "Points:" <<endl;
+      for(int i = 0; i < points->size(); i++) {
+        cout << (*points)[i].toString() << " ";
+      }
+      cout << endl;
+      cout << "TAARGET: " << points->size() << " " << (u == NULL) << endl;
+      return points;
+    }
   }
   cout << "GRAPH: " << endl;
   cout << graph->toString() << endl;
@@ -260,7 +297,7 @@ vector<Loc> *djikstrasAlgorithm(Graph *graph, Node* start, Node *target) {
   //   cout << "     " << graph->nodes[i]->loc.toString() << endl;
   // }
 
-  exit(0);
+  //exit(0);
   return points;
 }
 

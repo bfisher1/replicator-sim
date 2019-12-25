@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "CImg.h"
 
 void setpixel(SDL_Surface *screen, int x, int y, Color color ) {
     int yInv = y * BPP / screen->pitch;
@@ -169,6 +170,25 @@ Image *loadPPM(char *fileName) {
     }
     fclose(f);
     return img;
+}
+
+Image *loadPNG(char *fileName) {
+    cimg_library::CImg<float> cImage(fileName);
+    Image *img = (Image *) malloc(sizeof(Image));
+    img->width = cImage.width();
+    img->height = cImage.height();
+    img->grid = (Color **) malloc(sizeof(Color *) * img->height);
+
+    int r, g, b;
+    for(int i = 0; i < img->height; i++) {
+        img->grid[i] = (Color *) malloc(sizeof(Color) * img->width);
+        for(int j = 0; j < img->width; j++) {
+            img->grid[i][j].r = cImage(j,i,0,0);
+            img->grid[i][j].g = cImage(j,i,0,1);
+            img->grid[i][j].b = cImage(j,i,0,2);
+        }
+    }
+    return img;  
 }
 
 void drawImage(Image *img, SDL_Surface *screen, int x, int y) {

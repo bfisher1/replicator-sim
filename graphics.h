@@ -92,6 +92,7 @@ void drawCircle(SDL_Surface* screen, int x0, int y0, int r, Color color);
     @return the image in the file
 */
 Image *loadPPM(char *fileName);
+Image *loadPNG(char *fileName);
 
 /**
     Draws an image to the given screen, offset by x and y.
