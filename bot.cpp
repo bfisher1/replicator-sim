@@ -2,10 +2,11 @@
 #include <math.h>
 #include "util.hpp"
 #include <iostream>
+#include "anim.hpp"
 #define TURN_SENSITIVITY 1.62
 
 void wanderUpdateMove(Bot *bot) {
-  bot->vel = .2;
+  bot->vel = .04;
   bot->dir += TURN_SENSITIVITY * (randNorm() - .5);
 }
 
@@ -28,7 +29,9 @@ void Bot::update() {
   //world->grid[(int) x][(int) y].type = BlockType::water;
 }
 void Bot::draw(SDL_Surface *screen) {
-  drawRect(screen, (x - world->viewer->x) * world->zoom, (y - world->viewer->y) * world->zoom, world->zoom, world->zoom, (Color) {50, 50, 50});
+  int scale = 32;
+  drawStillFrame(getAnim("bot.png"), (x - world->viewer->x) * scale, (y - world->viewer->y) * scale, 0, false);
+  //drawRect(screen, (x - world->viewer->x) * world->zoom, (y - world->viewer->y) * world->zoom, world->zoom, world->zoom, (Color) {255, 0, 0});
   innerWorld->draw(screen);
 }
 

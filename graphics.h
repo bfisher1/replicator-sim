@@ -141,6 +141,7 @@ bool sameColors(Color *col1, Color *col2);
     @param angle the angle the image is rotated at
 */
 void drawSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz, float angle);
+void drawSimpleSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz);
 
 void plotpix(SDL_Surface *screen, int x, int y, Color color );
 #endif /* GRAPHICS_H */

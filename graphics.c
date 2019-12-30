@@ -203,8 +203,6 @@ void drawImage(Image *img, SDL_Surface *screen, int x, int y) {
             }
                 setpixel(screen, i+x, ytimesw, img->grid[j][i]);
         }
-        
-        
     }
 }
 
@@ -220,9 +218,39 @@ bool sameColors(Color *col1, Color *col2) {
     return col1->r == col2->r && col1->g == col2->g && col1->b == col2->b;
 }
 
+void drawSimpleSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz) {
+    int rxmax, rymax;
+    //coordinates relative to the frame, centered in its middle
+    float framex, framey;
+    //coordinates for rotated frame
+    int rotx, roty;
+    rxmax = rx + rwidth;
+    rymax = ry + rheight;
+    //screen coordinates of the image drawn
+    int screenx, screeny;
+    int w, h;
+    w = img->width;
+    h = img->height;
+    for(int x = rx; x < rxmax; x++) {
+        for(int y = ry; y < rymax; y++) {
+            framex = x - rx - rwidth / 2.0;
+            framey = y - ry - rheight / 2.0;
+            screenx = framex + centerx;
+            screeny = framey + centery;
+            int ytimesw = (screeny) * screen->pitch/BPP;
+            
+            if(flippedHoriz){
+                x = rx + rwidth - x - 1;
+            }
+            
+            if(0 <= x && x < w && 0 <= y && y < h && 0 <= screenx && screenx < screen->w && 0 <= screeny && screeny < screen->h && (background == NULL || !sameColors(&img->grid[y][x], background)) ) {
+                    setpixel(screen, screenx, ytimesw, img->grid[y][x]);
+            }
+        }
+    }
+}
+
 void drawSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background,  bool flippedHoriz, float angle) {
-    
-    //printf("Y: %d\n", y);
     int rxmax, rymax;
     //coordinates relative to the frame, centered in its middle
     float framex, framey;

@@ -76,5 +76,7 @@ void freeAnims(Anim **anims, int len);
     @return true if the animation has finished, false if not
 */
 bool playAnim(Anim *anim, int x, int y, float angle, int *frame, clock_t *lastPlayed, bool flippedHoriz);
-
+void drawStillFrame(Anim *anim, int x, int y, int frame, bool flippedHoriz);
+void setAnimScreen(SDL_Surface *screen);
+Anim *getAnim(string name);
 #endif /* ANIM_H */

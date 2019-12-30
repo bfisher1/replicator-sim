@@ -8,6 +8,9 @@
 #define DEFAULT_ZOOM 3
 #define DEFAULT_SEED 1
 #define DEFAULT_VIEWER_SPEED 10
+#define DEFAULT_RESOURCE_GEN_DEPTH 8
+#define DEFAULT_RESOURCE_GEN_FREQ .7
+#define DEFAULT_RESOURCE_GEN_CUTOFF .82
 
 using namespace std;
 
@@ -21,6 +24,11 @@ enum BlockType {
   copper,
   air,
   sand,
+  tree,
+  zinc,
+  iron,
+  nickel,
+  silicon,
   unknown
 };
 

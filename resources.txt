@@ -1,4 +1,4 @@
-Raw = {Zinc, Tree, Iron, Nickel, Silicon}
+Raw = {Zinc, Tree, Iron, Nickel, Silicon, Stone}
 
 Molds = {IronCapMold, MetalPoleMold, MetalSidingMold, TireMold, DiscMold, SmallMetalBallMold, SmallMetalStickMold, RubberGripperMold, DrillMold, GearMold}
 

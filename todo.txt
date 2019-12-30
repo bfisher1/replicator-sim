@@ -1,0 +1,13 @@
+Refactor block code to be class hierarchy, not structs
+
+Refactor anim to be class, better way of storing background colors
+
+Add zoom for anims
+  -need to add scaling of image size
+
+Add anims for blocks
+
+Add ability to toggle between worlds (robot inner worlds and real world)
+  - for robots to see each other, allow blocks to be aware of robots on them
+
+Add images for factory equipment

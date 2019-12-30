@@ -8,6 +8,7 @@
 #define HEIGHT 700
 #define DEPTH 32
 #include <iostream>
+#include "anim.hpp"
 
 World *world;
 
@@ -48,8 +49,7 @@ void clearScreen(SDL_Surface *screen) {
 
 int main() {
   SDL_Surface *screen;
-  SDL_Event event;
-  
+  SDL_Event event;  
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0 ) exit(EXIT_FAILURE);
   
@@ -59,8 +59,10 @@ int main() {
       exit(EXIT_FAILURE);
   }
 
+  setAnimScreen(screen);
+
   world = new World(256, 256);
-  //world->generateBots();
+  world->generateBots();
 
   ResourceGraph *resources = new ResourceGraph("resources.txt");
   resources->print();

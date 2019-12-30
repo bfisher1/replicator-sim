@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "util.hpp"
 #include <vector>
+#include <string.h>
 
 /**
     Loads an animation from the given file. Width and height pertain
@@ -48,8 +49,38 @@ void freeAnim(Anim *anim) {
     free(anim);
 }
 
+static map<string, Anim*> *animBank;
+
+void setAnimScreen(SDL_Surface *screen) {
+    animBank = loadAnims(screen);
+}
+
+Anim *getAnim(string name) {
+    return (*animBank)[name];
+}
+
+Color *backGroundOf(string animName) {
+    static Color red = (Color) {255, 0, 0};
+    static Color white = (Color) {255, 255, 255};
+    if(strcmp(animName.data(), "tree-big.png") == 0) {
+        return &red;
+    }
+    else if(strcmp(animName.data(), "tree-medium.png") == 0) {
+        return &red;
+    }
+    else if(strcmp(animName.data(), "tree-small.png") == 0) {
+        return &red;
+    }
+    else if(strcmp(animName.data(), "miner-bot.png") == 0) {
+        return &white;
+    }
+    else if(strcmp(animName.data(), "bot.png") == 0) {
+        return &white;
+    }
+    return NULL;
+}
+
 // todo: add scaling to load anim
-// null backgrounds
 // 0 fps?
 map<string, Anim*> *loadAnims(SDL_Surface *screen) {
 
@@ -58,7 +89,7 @@ map<string, Anim*> *loadAnims(SDL_Surface *screen) {
     for(int i = 0; i < names->size(); i++) {
     if(stringEndsWith((*names)[i], ".png")) {
         string fileDir = string("./anims/") + string((*names)[i]);
-        (*anims)[(*names)[i]] = loadAnim((char *) fileDir.data(), 1, 1, screen, NULL);
+        (*anims)[(*names)[i]] = loadAnim((char *) fileDir.data(), 1, 1, screen, backGroundOf((*names)[i]));
         }
     }
     return anims;
@@ -71,11 +102,18 @@ void freeAnims(Anim **anims, int len) {
     free(anims);
 }
 
+void drawStillFrame(Anim *anim, int x, int y, int frame, bool flippedHoriz) {
+    drawSimpleSubImage(anim->spriteSheet, anim->screen,
+        x, y, 0, frame * anim->height,
+        anim->width, anim->height, anim->background,
+        flippedHoriz);
+}
+
 bool playAnim(Anim *anim, int x, int y, float angle, int *frame, clock_t *lastPlayed, bool flippedHoriz) {
     drawSubImage(anim->spriteSheet, anim->screen,
-    x, y, 0, *frame * anim->height,
-    anim->width, anim->height, anim->background,
-    flippedHoriz, angle);
+        x, y, 0, *frame * anim->height,
+        anim->width, anim->height, anim->background,
+        flippedHoriz, angle);
 
     if( (float) (clock() - *lastPlayed) / CLOCKS_PER_SEC >= (1.0 / anim->fps) ){
        *lastPlayed = clock();
