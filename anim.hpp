@@ -15,6 +15,7 @@
 #include <time.h>
 #include <map>
 #include <string>
+#include "direction.hpp"
 
 using namespace std;
 
@@ -77,6 +78,7 @@ void freeAnims(Anim **anims, int len);
 */
 bool playAnim(Anim *anim, int x, int y, float angle, int *frame, clock_t *lastPlayed, bool flippedHoriz);
 void drawStillFrame(Anim *anim, int x, int y, int frame, bool flippedHoriz);
+void drawStillFrameRot(Anim *anim, int x, int y, int frame, bool flippedHoriz, double dir);
 void setAnimScreen(SDL_Surface *screen);
 Anim *getAnim(string name);
 #endif /* ANIM_H */

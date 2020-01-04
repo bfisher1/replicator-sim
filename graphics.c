@@ -250,6 +250,86 @@ void drawSimpleSubImage(Image *img, SDL_Surface *screen, int centerx, int center
     }
 }
 
+float ninetythree;
+
+void drawSubImageDir(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz, Direction dir) {
+    int rxmax, rymax;
+    //coordinates relative to the frame, centered in its middle
+    float framex, framey;
+    //coordinates for rotated frame
+    int rotx, roty;
+    rxmax = rx + rwidth;
+    rymax = ry + rheight;
+    //screen coordinates of the image drawn
+    int screenx, screeny;
+    int w, h;
+    w = img->width;
+    h = img->height;
+    float angle = ninetythree;
+    ninetythree += .1;
+    for(int x = rx; x < rxmax; x++) {
+        for(int y = ry; y < rymax; y++) {
+            framex = x - rx - rwidth / 2.0;
+            framey = y - ry - rheight / 2.0;
+
+            // rotx = framex - cos(angle) * framey;
+            // roty = framey;
+            // roty = sin(angle) * rotx + roty;
+            // rotx = rotx - sin(angle) * roty;
+            if(dir == Direction::up) {
+                rotx = framex;
+                roty = framey;
+            }
+            else if(dir == Direction::down) {
+                rotx = framex;
+                roty = ry - framey;
+            }
+            else if(dir == Direction::left) {
+                rotx = framey;
+                roty = framex;
+            }
+            else if(dir == Direction::right) {
+                rotx = ry - framey;
+                roty = framex;
+            }
+            // at 0 angle
+            double dx = framex;
+            double dy = framey;
+            
+            double radius = sqrt(dx * dx + dy * dy);
+            double initAngle = atan2(dy, dx);
+
+            rotx = framex;
+            roty = framey;
+            
+            rotx = radius * cos(angle + initAngle);
+            roty = radius * sin(angle + initAngle);
+            
+            printf("dx %f, dy %f, radius %f \n", dx, dy, radius );
+            double offset = .001;
+            double rotx2 = radius * cos(angle + initAngle - offset);
+            double roty2 = radius * sin(angle + initAngle - offset);
+
+            screenx = rotx + centerx;
+            screeny = roty + centery;
+
+            int ytimesw = (screeny) * screen->pitch/BPP;
+
+            if(flippedHoriz){
+                x = rx + rwidth - x - 1;
+            }
+            
+            if(0 <= x && x < w && 0 <= y && y < h && 0 <= screenx && screenx < screen->w && 0 <= screeny && screeny < screen->h && (background == NULL || !sameColors(&img->grid[y][x], background)) ) {
+                    setpixel(screen, screenx, ytimesw, img->grid[y][x]);
+            }
+            if(0 <= x && x < w && 0 <= y && y < h && 0 <= screenx + 1 && screenx + 1 < screen->w && 0 <= screeny && screeny < screen->h && (background == NULL || !sameColors(&img->grid[y][x], background)) ) {
+                    // helps to fill in missing pixels
+                    setpixel(screen, screenx + 1, ytimesw, img->grid[y][x]);
+            } 
+        }
+    }
+}
+
 void drawSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background,  bool flippedHoriz, float angle) {
     int rxmax, rymax;
     //coordinates relative to the frame, centered in its middle
@@ -268,22 +348,38 @@ void drawSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int
             framex = x - rx - rwidth / 2.0;
             framey = y - ry - rheight / 2.0;
 
-            rotx = framex - tan(angle / 2.0) * framey;
+            double dx = framex;
+            double dy = framey;
+            
+            double radius = sqrt(dx * dx + dy * dy);
+            double initAngle = atan2(dy, dx);
+
+            rotx = framex;
             roty = framey;
-            roty = sin(angle) * rotx + roty;
-            rotx = rotx -tan(angle/2.0) * roty;
+            
+            rotx = radius * cos(angle + initAngle);
+            roty = radius * sin(angle + initAngle);
+            
+            printf("dx %f, dy %f, radius %f \n", dx, dy, radius );
+            double offset = .001;
+            double rotx2 = radius * cos(angle + initAngle - offset);
+            double roty2 = radius * sin(angle + initAngle - offset);
 
             screenx = rotx + centerx;
             screeny = roty + centery;
-            
+
             int ytimesw = (screeny) * screen->pitch/BPP;
-            
+
             if(flippedHoriz){
                 x = rx + rwidth - x - 1;
             }
             
             if(0 <= x && x < w && 0 <= y && y < h && 0 <= screenx && screenx < screen->w && 0 <= screeny && screeny < screen->h && (background == NULL || !sameColors(&img->grid[y][x], background)) ) {
                     setpixel(screen, screenx, ytimesw, img->grid[y][x]);
+            }
+            if(0 <= x && x < w && 0 <= y && y < h && 0 <= screenx + 1 && screenx + 1 < screen->w && 0 <= screeny && screeny < screen->h && (background == NULL || !sameColors(&img->grid[y][x], background)) ) {
+                    // helps to fill in missing pixels
+                    setpixel(screen, screenx + 1, ytimesw, img->grid[y][x]);
             }
         }
     }

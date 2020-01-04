@@ -17,6 +17,7 @@ class InnerWorld {
     Loc botLoc();
     bool isCrossable(Loc loc);
     Loc target;
+    Loc *focus;
     vector<Loc> *targetPath;
     time_t lastUpdate;
     // lists of resources

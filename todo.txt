@@ -11,3 +11,5 @@ Add ability to toggle between worlds (robot inner worlds and real world)
   - for robots to see each other, allow blocks to be aware of robots on them
 
 Add images for factory equipment
+
+Refactor graphics draw sub image to use overriden methods, less copied code

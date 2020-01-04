@@ -77,6 +77,12 @@ Color *backGroundOf(string animName) {
     else if(strcmp(animName.data(), "bot.png") == 0) {
         return &white;
     }
+    else if(strcmp(animName.data(), "select.png") == 0) {
+        return &red;
+    }
+    else if(strcmp(animName.data(), "select-green.png") == 0) {
+        return &red;
+    }
     return NULL;
 }
 
@@ -107,6 +113,13 @@ void drawStillFrame(Anim *anim, int x, int y, int frame, bool flippedHoriz) {
         x, y, 0, frame * anim->height,
         anim->width, anim->height, anim->background,
         flippedHoriz);
+}
+
+void drawStillFrameRot(Anim *anim, int x, int y, int frame, bool flippedHoriz, double dir) {
+    drawSubImage(anim->spriteSheet, anim->screen,
+        x, y, 0, frame * anim->height,
+        anim->width, anim->height, anim->background,
+        flippedHoriz, dir);
 }
 
 bool playAnim(Anim *anim, int x, int y, float angle, int *frame, clock_t *lastPlayed, bool flippedHoriz) {

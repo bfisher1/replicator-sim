@@ -8,6 +8,8 @@ InnerWorld::InnerWorld(World *world, Bot *b) {
   map->viewer->width = 200;
   map->viewer->height = 200;
   map->zoom = 3;
+  focus = NULL;
+  targetPath = NULL;
   
   map->setAllBlocks(BlockType::unknown);
   self = b;

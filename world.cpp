@@ -95,10 +95,15 @@ string blockStr(BlockType type) {
 bool World::isCrossable(BlockType type) {
   switch(type) {
     case BlockType::air:
+    case BlockType::sand:
       return true;
     default:
       return false;
   }
+}
+
+bool World::isCrossable(Loc loc) {
+  return isCrossable(grid[(int) loc.x][(int) loc.y].type);
 }
 
 
@@ -135,7 +140,7 @@ void World::createStoneBlocks() {
   for(int i = 0; i < height; i++) {
     for(int j = 0; j < width; j++) {
       double height = Perlin_Get2d((double) i, (double) j, .04, 4, DEFAULT_SEED);
-      if(height > .55) {
+      if(height > STONE_CUTOFF) {
         grid[i][j].type = BlockType::stone;
       }
     }
@@ -162,7 +167,7 @@ void World::setAllBlocks(BlockType type) {
 }
 
 void World::generateBots() {
-  bots.push_back(new Bot(5, 5, this));
+  bots.push_back(new Bot(9, 13, this));
 }
 
 void World::draw(SDL_Surface *screen) {

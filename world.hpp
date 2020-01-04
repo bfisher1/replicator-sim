@@ -11,7 +11,7 @@
 #define DEFAULT_RESOURCE_GEN_DEPTH 8
 #define DEFAULT_RESOURCE_GEN_FREQ .7
 #define DEFAULT_RESOURCE_GEN_CUTOFF .82
-
+#define STONE_CUTOFF .65
 using namespace std;
 
 class World;
@@ -70,6 +70,7 @@ class World
     void generateBots();
     void update();
     bool isCrossable(BlockType type);
+    bool isCrossable(Loc loc);
     string blockStrAt(Loc);
 };
 #endif

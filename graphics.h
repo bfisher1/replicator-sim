@@ -11,6 +11,7 @@
 
 #include <SDL/SDL.h>
 #include <stdbool.h>
+#include "direction.hpp"
 #define BPP 4
 typedef struct {
     Uint8 r;
@@ -141,6 +142,7 @@ bool sameColors(Color *col1, Color *col2);
     @param angle the angle the image is rotated at
 */
 void drawSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz, float angle);
+void drawSubImageDir(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz, Direction dir);
 void drawSimpleSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int rx, int ry, int rwidth, int rheight, Color *background, bool flippedHoriz);
 
 void plotpix(SDL_Surface *screen, int x, int y, Color color );
