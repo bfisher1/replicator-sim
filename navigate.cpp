@@ -138,7 +138,7 @@ Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal)
       //cout << "00000000000" << endl;
       graph->printMagic();
       ////cout << "    i & j: " << i << " " << j << endl;
-      if(innerWorld->map->isCrossable(innerWorld->map->grid[j + startX][i + startY].type)) {
+      if(innerWorld->map->isCrossable(innerWorld->map->grid[j + startX][i + startY]->type)) {
         Node *node = new Node(Loc(startX + j, startY + i));
         //cout << "    i & j: " << i << " " << j << "-> global -> " << node->loc.toString() << endl;
         //cout << "00000000000" << endl;
@@ -305,7 +305,9 @@ vector<Loc> *createNaiveDjikstraRoute(InnerWorld *innerWorld, Loc target) {
   
   vector<Loc> *points = new vector<Loc>();
   if(!innerWorld->isCrossable(innerWorld->botLoc()) || !innerWorld->isCrossable(target)) {
-    cout << "Support not available" << innerWorld->map->blockStrAt(innerWorld->botLoc())<< " at " << innerWorld->botLoc().toString() << endl;
+    int botx = innerWorld->botLoc().x;
+    int boty = innerWorld->botLoc().y;
+    cout << "Support not available" << innerWorld->map->grid[botx][boty]->name << " at " << innerWorld->botLoc().toString() << endl;
     return points;
   }
   Node* start;

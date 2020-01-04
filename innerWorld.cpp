@@ -30,5 +30,5 @@ Loc InnerWorld::botLoc() {
 }
 
 bool InnerWorld::isCrossable(Loc loc) {
-  return map->isCrossable(map->grid[(int) loc.x][(int) loc.y].type);
+  return map->isCrossable(map->grid[(int) loc.x][(int) loc.y]->type);
 }

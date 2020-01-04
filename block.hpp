@@ -1,0 +1,103 @@
+#ifndef BLOCK_H
+#define BLOCK_H
+#include <string>
+#include "anim.hpp"
+#include <time.h>
+#include <iostream>
+
+using namespace std;
+
+enum BlockType {
+  stone,
+  water,
+  coal,
+  copper,
+  air,
+  sand,
+  tree,
+  zinc,
+  iron,
+  nickel,
+  silicon,
+  unknown
+};
+
+class Block {
+  public:
+    BlockType type;
+    string name;
+    Anim *anim;
+    Block(BlockType type, string name);
+    Block();
+    void draw(int screenX, int screenY, int scale);
+};
+
+enum TreeAge {
+  young,
+  middle,
+  adult,
+  charred,
+  old,
+  stump
+};
+
+class TreeBlock : public Block {
+  public:
+    TreeAge age;
+    time_t lastAgeUpdate;
+    void ageTree();
+    TreeBlock();
+};
+
+class StoneBlock : public Block {
+  public:
+    StoneBlock();
+};
+class WaterBlock : public Block {
+  public:
+    WaterBlock();
+};
+class CoalBlock : public Block {
+  public:
+    CoalBlock();
+};
+class CopperBlock : public Block {
+  public:
+    CopperBlock();
+};
+class AirBlock : public Block {
+  public:
+    AirBlock();
+};
+class SandBlock : public Block {
+  public:
+    SandBlock();
+};
+class ZincBlock : public Block {
+  public:
+    ZincBlock();
+};
+class IronBlock : public Block {
+  public:
+    IronBlock();
+};
+class NickelBlock : public Block {
+  public:
+    NickelBlock();
+};
+class SiliconBlock : public Block {
+  public:
+    SiliconBlock();
+};
+
+class UnknownBlock : public Block {
+  public:
+    UnknownBlock();
+};
+
+
+
+Block *newblockFromType(BlockType type);
+
+
+#endif

@@ -37,10 +37,10 @@ void move(Bot *bot) {
   else {
     bot->dir += M_PI;
   }
-  cout << "top left " << bot->world->isCrossable(Loc(left,top)) << bot->world->blockStrAt(Loc(left, top)) << endl;
-  cout << "top right " << bot->world->isCrossable(Loc(right,top)) << bot->world->blockStrAt(Loc(right, top)) << endl;
-  cout << "bottom left " << bot->world->isCrossable(Loc(left,bottom)) << bot->world->blockStrAt(Loc(left, bottom)) << endl;
-  cout << "bottom right " << bot->world->isCrossable(Loc(right,bottom)) << bot->world->blockStrAt(Loc(right, bottom)) << endl;
+  cout << "top left " << bot->world->isCrossable(Loc(left,top)) << bot->world->grid[left][top]->name << endl;
+  cout << "top right " << bot->world->isCrossable(Loc(right,top)) << bot->world->grid[right][top]->name << endl;
+  cout << "bottom left " << bot->world->isCrossable(Loc(left,bottom)) << bot->world->grid[left][bottom]->name << endl;
+  cout << "bottom right " << bot->world->isCrossable(Loc(right,bottom)) << bot->world->grid[right][bottom]->name << endl;
   
   cout << "----" << endl;
   bot->innerWorld->targetPath = new vector<Loc>();
@@ -64,7 +64,7 @@ void Bot::update() {
   return;
   innerWorld->target = Loc(80, 120);
   innerWorld->targetPath = createRoute(innerWorld->target);
-  //world->grid[(int) x][(int) y].type = BlockType::water;
+  //world->grid[(int) x][(int) y]->type = BlockType::water;
 }
 void Bot::draw(SDL_Surface *screen) {
   int scale = 32;
@@ -85,7 +85,7 @@ void Bot::draw(SDL_Surface *screen) {
 void Bot::updateBlocksInVision() {
   for(int i = max(x - visionRange / 2, 0); i < min(x + visionRange / 2, world->width); i++) {
     for(int j = max(y - visionRange / 2, 0); j < min(y + visionRange / 2, world->height); j++) {
-      innerWorld->map->grid[i][j].type = world->grid[i][j].type;
+      innerWorld->map->grid[i][j]->type = world->grid[i][j]->type;
     }
   }
 }

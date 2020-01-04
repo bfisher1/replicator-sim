@@ -13,3 +13,9 @@ Add ability to toggle between worlds (robot inner worlds and real world)
 Add images for factory equipment
 
 Refactor graphics draw sub image to use overriden methods, less copied code
+
+Figure out better way to make make file
+
+Clean up constants all over the place
+
+remove blockAnimName function

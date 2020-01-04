@@ -5,6 +5,8 @@
 #include "bot.hpp"
 #include <string>
 #include "loc.hpp"
+#include "block.hpp"
+
 #define DEFAULT_ZOOM 3
 #define DEFAULT_SEED 1
 #define DEFAULT_VIEWER_SPEED 10
@@ -17,24 +19,7 @@ using namespace std;
 class World;
 class Bot;
 
-enum BlockType {
-  stone,
-  water,
-  coal,
-  copper,
-  air,
-  sand,
-  tree,
-  zinc,
-  iron,
-  nickel,
-  silicon,
-  unknown
-};
 
-struct Block {
-  BlockType type;
-};
 
 class Viewer {
   public:
@@ -56,7 +41,7 @@ class World
 
     int width;
     int height;
-    Block **grid;
+    Block ***grid;
     int zoom;
     Viewer *viewer;
     vector<Bot *> bots;
@@ -71,6 +56,5 @@ class World
     void update();
     bool isCrossable(BlockType type);
     bool isCrossable(Loc loc);
-    string blockStrAt(Loc);
 };
 #endif

@@ -19,29 +19,8 @@ int getNextSeed() {
   return seed;
 }
 
-Color blockColor(Block block) {
-  switch(block.type) {
-    case BlockType::stone:
-      return (Color) {136, 136, 136};
-    case BlockType::water:
-      return (Color) {0, 0, 255};
-    case BlockType::air:
-      return (Color) {0, 200, 0};
-    case BlockType::coal:
-      return (Color) {0, 0, 0};
-    case BlockType::copper:
-      return (Color) {255, 128, 0};
-    case BlockType::sand:
-      return (Color) {255, 255, 223};
-    case BlockType::unknown:
-      return (Color) {0, 0, 0};
-    default:
-      return (Color) {0, 0, 0};
-  }
-}
-
-string blockAnimName(Block block) {
-  switch(block.type) {
+string blockAnimName(Block *block) {
+  switch(block->type) {
     case BlockType::stone:
       return "stone.png";
     case BlockType::water:
@@ -71,26 +50,7 @@ string blockAnimName(Block block) {
   }
 }
 
-string blockStr(BlockType type) {
-  switch(type) {
-    case BlockType::stone:
-      return "Stone";
-    case BlockType::water:
-      return "Water";
-    case BlockType::air:
-      return "Air";
-    case BlockType::coal:
-      return "Coal";
-    case BlockType::copper:
-      return "Copper";
-    case BlockType::sand:
-      return "Sand";
-    case BlockType::unknown:
-      return "Unknown";
-    default:
-      return "???";
-  }
-}
+
 
 bool World::isCrossable(BlockType type) {
   switch(type) {
@@ -103,7 +63,7 @@ bool World::isCrossable(BlockType type) {
 }
 
 bool World::isCrossable(Loc loc) {
-  return isCrossable(grid[(int) loc.x][(int) loc.y].type);
+  return isCrossable(grid[(int) loc.x][(int) loc.y]->type);
 }
 
 
@@ -111,9 +71,15 @@ World::World(int w, int h) {
   width = w;
   height = h;
   zoom = DEFAULT_ZOOM;
-  grid = new Block*[height];
-  for(int i = 0; i < height; ++i)
-    grid[i] = new Block[width];
+  grid = new Block**[width];
+  for(int i = 0; i < width; i++)
+    grid[i] = new Block*[height];
+  
+  for(int i = 0; i < width; i++) {
+    for(int j = 0; j < height; j++) {
+      grid[i][j] = new AirBlock();
+    }
+  }
   
   setAllBlocks(BlockType::air);
   createStoneBlocks();
@@ -133,6 +99,13 @@ World::World(int w, int h) {
 
   // setting up viewer for user to view world
   viewer = new Viewer(this);
+
+  // set initial block animations
+  for(int i = 0; i < width; i++) {
+    for(int j = 0; j < height; j++) {
+      grid[i][j]->anim = getAnim(blockAnimName(grid[i][j]));
+    }
+  }
   
 }
 
@@ -141,7 +114,7 @@ void World::createStoneBlocks() {
     for(int j = 0; j < width; j++) {
       double height = Perlin_Get2d((double) i, (double) j, .04, 4, DEFAULT_SEED);
       if(height > STONE_CUTOFF) {
-        grid[i][j].type = BlockType::stone;
+        grid[i][j] = new StoneBlock();
       }
     }
   }
@@ -151,8 +124,8 @@ void World::createResources(BlockType resourceType, BlockType surroundingType, d
   for(int i = 0; i < height; i++) {
     for(int j = 0; j < width; j++) {
       double height = Perlin_Get2d((double) i, (double) j, freq, depth, seed);
-      if(height > cutoff && grid[i][j].type == surroundingType) {
-        grid[i][j].type = resourceType;
+      if(height > cutoff && grid[i][j]->type == surroundingType) {
+        grid[i][j] = newblockFromType(resourceType);
       }
     }
   }
@@ -161,7 +134,7 @@ void World::createResources(BlockType resourceType, BlockType surroundingType, d
 void World::setAllBlocks(BlockType type) {
   for(int i = 0; i < height; i++) {
     for(int j = 0; j < width; j++) {
-      grid[i][j].type = type;
+      grid[i][j] = newblockFromType(type);
     }
   }
 }
@@ -182,12 +155,13 @@ void World::draw(SDL_Surface *screen) {
 
   for(int i = int(viewer->x); (i - viewer->x) * scale < viewer->width && i < width; i++) {
     for(int j = int(viewer->y); (j - viewer->y) * scale < viewer->height && j < height; j++) {
-      drawStillFrame(getAnim(blockAnimName(grid[i][j])), (i - viewer->x) * scale, (j - viewer->y) * scale, 0, false);
-      if(grid[i][j].type == BlockType::tree) {
+      grid[i][j]->draw((i - viewer->x) * scale, (j - viewer->y) * scale, 1);
+      if(grid[i][j]->type == BlockType::tree) {
         treeCoords.push_back(Loc(i, j));
       }
     }
   }
+  // todo move this to block draw
   //draw trees
   for(int i = 0; i < treeCoords.size(); i++) {
     drawStillFrame(getAnim("tree-big.png"), (treeCoords[i].x - viewer->x) * scale, (treeCoords[i].y - TREE_BLOCKS_HEIGHT - viewer->y) * scale, 0, false);
@@ -262,8 +236,4 @@ void Viewer::handleKeyDownEvent(SDL_Event *event) {
     default:
       break;
   }
-}
-
-string World::blockStrAt(Loc loc) {
-  return blockStr(grid[(int) loc.x][(int) loc.y].type);
 }
