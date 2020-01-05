@@ -21,8 +21,9 @@ IntervalExecutor::IntervalExecutor(Timer *t, void (*exec)(World *world)) {
 }
 
 
-IntervalExecutorBus::IntervalExecutorBus() {
+IntervalExecutorBus::IntervalExecutorBus(World *w) {
   intervalExecutors = new map<int, IntervalExecutor *>();
+  world = w;
 }
 
 int IntervalExecutorBus::addIntervalExecutor(double frequency, void (*exec)(World *world)) {

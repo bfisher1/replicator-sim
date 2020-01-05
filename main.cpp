@@ -72,7 +72,7 @@ int main() {
   while(true) {
     clearScreen(screen);
     world->update();
-    world->draw(screen);
+    world->bots[0]->innerWorld->draw(screen);
     updateScreen(screen);
     handleKeyEvent(&event);
   }

@@ -42,7 +42,7 @@ class IntervalExecutorBus {
     World *world;
     int count;
     map<int, IntervalExecutor*> *intervalExecutors;
-    IntervalExecutorBus();
+    IntervalExecutorBus(World *world);
     int addIntervalExecutor(double frequency, void (*)(World *world));
     void removeIntervalExecutor(int id);
     void checkAndRunExecutors();

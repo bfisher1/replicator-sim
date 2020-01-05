@@ -48,13 +48,14 @@ class World
     Viewer *viewer;
     vector<Bot *> bots;
     IntervalExecutorBus *timerBus;
+    map<Loc, TreeBlock *> *trees;
 
     World(int w, int h);
 
     void draw(SDL_Surface *screen);
     void setAllBlocks(BlockType type);
     void createStoneBlocks();
-    void createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth);
+    vector<Loc> *createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth);
     void generateBots();
     void update();
     bool isCrossable(BlockType type);

@@ -19,6 +19,7 @@ void TreeBlock::drawTree(int screenX, int screenY, int scale) {
   switch(age) {
     case TreeAge::young:
       treeAnim = getAnim("tree-small.png");
+      break;
     case TreeAge::middle:
       treeAnim = getAnim("tree-medium.png");
       break;
@@ -36,6 +37,19 @@ void TreeBlock::drawTree(int screenX, int screenY, int scale) {
 TreeBlock::TreeBlock()
       : Block(BlockType::tree, "tree") {
   age = TreeAge::young;
+}
+
+void TreeBlock::ageTree() {
+  switch(age) {
+    case TreeAge::young:
+      age = TreeAge::middle;
+      break;
+    case TreeAge::middle:
+      age = TreeAge::adult;
+      break;
+    default:
+      break;
+  }
 }
 
 StoneBlock::StoneBlock()

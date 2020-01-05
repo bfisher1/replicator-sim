@@ -1,10 +1,10 @@
 CC = clang++-6.0
 CFLAGS = -Wall -std=c++17 -g -lstdc++fs
 
-Rep : main.o graphics.o anim.o world.o perlin.o util.o bot.o resourceGraph.o loc.o navigate.o innerWorld.o direction.o block.o timer.o
+Rep : main.o graphics.o anim.o loc.o world.o perlin.o util.o bot.o resourceGraph.o navigate.o innerWorld.o direction.o block.o timer.o
 	$(CC) $(CFLAGS) -pthread -O0 -o $@ $^ -lX11 -lm -I/usr/local/include -L/usr/local/lib -lSDL
 
-world.o : world.cpp world.hpp graphics.h perlin.h util.hpp bot.hpp loc.hpp anim.hpp block.hpp timer.hpp
+world.o : world.cpp world.hpp graphics.h perlin.h util.hpp bot.hpp loc.hpp anim.hpp block.hpp timer.hpp loc.hpp
 
 graphics.o : graphics.c graphics.h util.hpp direction.hpp
 

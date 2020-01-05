@@ -3,6 +3,7 @@
 #include "util.hpp"
 #include "anim.hpp"
 #include <iostream>
+#include "loc.hpp"
 
 // todo, centralize this here
 #define MIN_X 0
@@ -12,6 +13,9 @@
 #define MAX_ZOOM 20
 #define MIN_ZOOM 1
 #define TREE_BLOCKS_HEIGHT 1
+#define TREE_AGE_CHANCE .15
+// todo make this 60 or 120
+#define TREE_AGE_INTERVAL 6
 
 int seed = DEFAULT_SEED;
 int getNextSeed() {
@@ -44,13 +48,17 @@ string blockAnimName(Block *block) {
     case BlockType::silicon:
       return "silicon.png";
     case BlockType::unknown:
-       return "black.png";
+       return "unknown.png";
     default:
       return "black.png";
   }
 }
 
 
+// used for comparing locs, done on a distance basis
+static bool operator<(const Loc& l1, const Loc& l2) {
+  return l1.x * l1.x + l1.y * l1.y < l2.x * l2.x + l2.y * l2.y;
+}
 
 bool World::isCrossable(BlockType type) {
   switch(type) {
@@ -68,8 +76,21 @@ bool World::isCrossable(Loc loc) {
 
 
 void updateTrees(World *world) {
-  cout << "Updating those trees" << endl;
+  for(auto it = world->trees->begin(); it != world->trees->end(); it++) {
+    if(randNorm() <= TREE_AGE_CHANCE) {
+      it->second->ageTree();
+    }
+  }
 }
+
+void setBlockAnims(World *world) {
+  for(int i = 0; i < world->width; i++) {
+    for(int j = 0; j < world->height; j++) {
+      world->grid[i][j]->anim = getAnim(blockAnimName(world->grid[i][j]));
+    }
+  }
+}
+
 
 World::World(int w, int h) {
   width = w;
@@ -99,21 +120,25 @@ World::World(int w, int h) {
   createResources(BlockType::sand, BlockType::air, .50, beachSeed, .08, 4);
   createResources(BlockType::water, BlockType::sand, .65, beachSeed, .08, 4);
   // trees
-  createResources(BlockType::tree, BlockType::air, .65, getNextSeed(), .8, 4);
+  trees = new map<Loc, TreeBlock *>();
+  vector<Loc> *treeLocs = createResources(BlockType::tree, BlockType::air, .65, getNextSeed(), .8, 4);
+  //map<Loc, TreeBlock *> trees;
+  for(int i = 0; i < treeLocs->size(); i++) {
+    Loc loc = (*treeLocs)[i];
+    (*trees)[loc] = (TreeBlock *) grid[(int) loc.x][(int) loc.y];
+  }
 
   // setting up viewer for user to view world
   viewer = new Viewer(this);
 
   //interval events
-  timerBus = new IntervalExecutorBus();
-  timerBus->addIntervalExecutor(1, updateTrees);
+  timerBus = new IntervalExecutorBus(this);
+  timerBus->addIntervalExecutor(TREE_AGE_INTERVAL, updateTrees);
+
 
   // set initial block animations
-  for(int i = 0; i < width; i++) {
-    for(int j = 0; j < height; j++) {
-      grid[i][j]->anim = getAnim(blockAnimName(grid[i][j]));
-    }
-  }
+  setBlockAnims(this);
+  
   
 }
 
@@ -128,15 +153,21 @@ void World::createStoneBlocks() {
   }
 }
 
-void World::createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth) {
+/*
+Returns list of locations of the resource added.
+*/
+vector<Loc> *World::createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth) {
+  vector<Loc> *locs = new vector<Loc>();
   for(int i = 0; i < height; i++) {
     for(int j = 0; j < width; j++) {
       double height = Perlin_Get2d((double) i, (double) j, freq, depth, seed);
       if(height > cutoff && grid[i][j]->type == surroundingType) {
         grid[i][j] = newblockFromType(resourceType);
+        locs->push_back(Loc(i, j));
       }
     }
   }
+  return locs;
 }
 
 void World::setAllBlocks(BlockType type) {
@@ -145,6 +176,7 @@ void World::setAllBlocks(BlockType type) {
       grid[i][j] = newblockFromType(type);
     }
   }
+  setBlockAnims(this);
 }
 
 void World::generateBots() {
@@ -164,7 +196,9 @@ void World::draw(SDL_Surface *screen) {
   for(int i = int(viewer->x); (i - viewer->x) * scale < viewer->width && i < width; i++) {
     for(int j = int(viewer->y); (j - viewer->y) * scale < viewer->height && j < height; j++) {
 
-        grid[i][j]->draw((i - viewer->x) * scale, (j - viewer->y) * scale, 1);
+      // cout << "drawing world " << grid[i][j]->name << endl;
+
+      grid[i][j]->draw((i - viewer->x) * scale, (j - viewer->y) * scale, 1);
       if(grid[i][j]->type == BlockType::tree) {
         treeCoords.push_back(Loc(i, j));
       }

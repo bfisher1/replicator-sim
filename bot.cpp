@@ -85,7 +85,8 @@ void Bot::draw(SDL_Surface *screen) {
 void Bot::updateBlocksInVision() {
   for(int i = max(x - visionRange / 2, 0); i < min(x + visionRange / 2, world->width); i++) {
     for(int j = max(y - visionRange / 2, 0); j < min(y + visionRange / 2, world->height); j++) {
-      innerWorld->map->grid[i][j]->type = world->grid[i][j]->type;
+      // TODO: THIS SHOULD BE COPY BY VALUE, not just reference
+      innerWorld->map->grid[i][j] = world->grid[i][j];
     }
   }
 }

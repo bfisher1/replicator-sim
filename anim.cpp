@@ -4,6 +4,7 @@
 #include "util.hpp"
 #include <vector>
 #include <string.h>
+#include <iostream>
 
 /**
     Loads an animation from the given file. Width and height pertain
