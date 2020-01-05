@@ -360,7 +360,6 @@ void drawSubImage(Image *img, SDL_Surface *screen, int centerx, int centery, int
             rotx = radius * cos(angle + initAngle);
             roty = radius * sin(angle + initAngle);
             
-            printf("dx %f, dy %f, radius %f \n", dx, dy, radius );
             double offset = .001;
             double rotx2 = radius * cos(angle + initAngle - offset);
             double roty2 = radius * sin(angle + initAngle - offset);

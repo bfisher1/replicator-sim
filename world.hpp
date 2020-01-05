@@ -6,6 +6,7 @@
 #include <string>
 #include "loc.hpp"
 #include "block.hpp"
+#include "timer.hpp"
 
 #define DEFAULT_ZOOM 3
 #define DEFAULT_SEED 1
@@ -18,6 +19,7 @@ using namespace std;
 
 class World;
 class Bot;
+class IntervalExecutorBus;
 
 
 
@@ -45,6 +47,7 @@ class World
     int zoom;
     Viewer *viewer;
     vector<Bot *> bots;
+    IntervalExecutorBus *timerBus;
 
     World(int w, int h);
 

@@ -14,6 +14,23 @@ void Block::draw(int screenX, int screenY, int scale) {
 }
 
 
+void TreeBlock::drawTree(int screenX, int screenY, int scale) {
+  Anim *treeAnim = NULL;
+  switch(age) {
+    case TreeAge::young:
+      treeAnim = getAnim("tree-small.png");
+    case TreeAge::middle:
+      treeAnim = getAnim("tree-medium.png");
+      break;
+    case TreeAge::adult:
+      treeAnim = getAnim("tree-big.png");
+      break;
+    default:
+      treeAnim = getAnim("tree-big.png");
+  }
+  drawStillFrame(treeAnim, screenX, screenY, 0, false);
+}
+
 
 
 TreeBlock::TreeBlock()

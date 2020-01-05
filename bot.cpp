@@ -37,12 +37,12 @@ void move(Bot *bot) {
   else {
     bot->dir += M_PI;
   }
-  cout << "top left " << bot->world->isCrossable(Loc(left,top)) << bot->world->grid[left][top]->name << endl;
-  cout << "top right " << bot->world->isCrossable(Loc(right,top)) << bot->world->grid[right][top]->name << endl;
-  cout << "bottom left " << bot->world->isCrossable(Loc(left,bottom)) << bot->world->grid[left][bottom]->name << endl;
-  cout << "bottom right " << bot->world->isCrossable(Loc(right,bottom)) << bot->world->grid[right][bottom]->name << endl;
+  // cout << "top left " << bot->world->isCrossable(Loc(left,top)) << bot->world->grid[left][top]->name << endl;
+  // cout << "top right " << bot->world->isCrossable(Loc(right,top)) << bot->world->grid[right][top]->name << endl;
+  // cout << "bottom left " << bot->world->isCrossable(Loc(left,bottom)) << bot->world->grid[left][bottom]->name << endl;
+  // cout << "bottom right " << bot->world->isCrossable(Loc(right,bottom)) << bot->world->grid[right][bottom]->name << endl;
   
-  cout << "----" << endl;
+  // cout << "----" << endl;
   bot->innerWorld->targetPath = new vector<Loc>();
   bot->innerWorld->targetPath->push_back(Loc(left,top));
   bot->innerWorld->targetPath->push_back(Loc(right,top));

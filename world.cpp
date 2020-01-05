@@ -67,6 +67,10 @@ bool World::isCrossable(Loc loc) {
 }
 
 
+void updateTrees(World *world) {
+  cout << "Updating those trees" << endl;
+}
+
 World::World(int w, int h) {
   width = w;
   height = h;
@@ -99,6 +103,10 @@ World::World(int w, int h) {
 
   // setting up viewer for user to view world
   viewer = new Viewer(this);
+
+  //interval events
+  timerBus = new IntervalExecutorBus();
+  timerBus->addIntervalExecutor(1, updateTrees);
 
   // set initial block animations
   for(int i = 0; i < width; i++) {
@@ -155,16 +163,20 @@ void World::draw(SDL_Surface *screen) {
 
   for(int i = int(viewer->x); (i - viewer->x) * scale < viewer->width && i < width; i++) {
     for(int j = int(viewer->y); (j - viewer->y) * scale < viewer->height && j < height; j++) {
-      grid[i][j]->draw((i - viewer->x) * scale, (j - viewer->y) * scale, 1);
+
+        grid[i][j]->draw((i - viewer->x) * scale, (j - viewer->y) * scale, 1);
       if(grid[i][j]->type == BlockType::tree) {
         treeCoords.push_back(Loc(i, j));
       }
     }
   }
-  // todo move this to block draw
+
+  //TODO DRAW BASED OFF OF HEIGHTS in z axis
+
   //draw trees
   for(int i = 0; i < treeCoords.size(); i++) {
-    drawStillFrame(getAnim("tree-big.png"), (treeCoords[i].x - viewer->x) * scale, (treeCoords[i].y - TREE_BLOCKS_HEIGHT - viewer->y) * scale, 0, false);
+    TreeBlock *treeBlock = (TreeBlock *) grid[(int) treeCoords[i].x][(int) treeCoords[i].y];
+    treeBlock->drawTree((treeCoords[i].x - viewer->x) * scale, (treeCoords[i].y - TREE_BLOCKS_HEIGHT - viewer->y) * scale, 1);
   }
 
   //draw bots
@@ -178,6 +190,7 @@ void World::update() {
   for(int i = 0; i < bots.size(); i++) {
     bots[i]->update();
   }
+  timerBus->checkAndRunExecutors();
 }
 
 Viewer::Viewer(World *w) {

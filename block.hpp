@@ -47,6 +47,7 @@ class TreeBlock : public Block {
     time_t lastAgeUpdate;
     void ageTree();
     TreeBlock();
+    void drawTree(int screenX, int screenY, int scale);
 };
 
 class StoneBlock : public Block {

@@ -19,3 +19,12 @@ Figure out better way to make make file
 Clean up constants all over the place
 
 remove blockAnimName function
+
+centralize anims into block constructors
+
+done : add timer event bus system. i.e. when after the timer goes off, execute function. i.e. after 2 mins, randomly update tree ages
+
+should be observer pattern between world and updating blocks (printers, trees) where the world has list of each of these
+
+use multiple threads in graphics
+
