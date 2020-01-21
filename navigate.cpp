@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include "util.hpp"
 
 // for diagonal distances
 #define SQRT_2 1.4142135
@@ -120,10 +121,14 @@ Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal)
   Loc bottomRight;
   //cout << "Bounding: " << src.toString() << "; " << target.toString() << endl;
   Loc::setBoundingBox(src, target, topLeft, bottomRight);
+  int border = 4;
+  topLeft.x = max(0, topLeft.x - border);
+  topLeft.y = max(0, topLeft.y - border);
+  
   // then convert all blocks that are crossable to graph
   
-  int width = bottomRight.x - topLeft.x + 2;
-  int height = bottomRight.y - topLeft.y + 2;
+  int width = bottomRight.x - topLeft.x + border;
+  int height = bottomRight.y - topLeft.y + border;
   int startX =  (int) topLeft.x;
   int startY =  (int) topLeft.y;
   // create a 2d array of the pointers to the nodes (leave uncrossable blocks as NULL)
@@ -138,7 +143,7 @@ Graph *mapToGraph(InnerWorld *innerWorld, Loc target, Node *&start, Node *&goal)
       //cout << "00000000000" << endl;
       graph->printMagic();
       ////cout << "    i & j: " << i << " " << j << endl;
-      if(innerWorld->map->isCrossable(innerWorld->map->grid[j + startX][i + startY]->type)) {
+      if(innerWorld->map->grid[j + startX][i + startY]->crossable) {
         Node *node = new Node(Loc(startX + j, startY + i));
         //cout << "    i & j: " << i << " " << j << "-> global -> " << node->loc.toString() << endl;
         //cout << "00000000000" << endl;
@@ -216,15 +221,15 @@ Node *popMinNode(vector<Node *> *queue) {
     return NULL;
   }
   int idx = 0;
-  Node *min = (*queue)[0];
+  Node *minNode = (*queue)[0];
   for(int i = 0; i < queue->size(); i++) {
-    if( (*queue)[i]->dist < min->dist) {
-      min = (*queue)[i];
+    if( (*queue)[i]->dist < minNode->dist) {
+      minNode = (*queue)[i];
       idx = i;
     }
   }
   queue->erase(queue->begin() + idx);
-  return min;
+  return minNode;
 }
 
 /*
@@ -246,17 +251,17 @@ vector<Loc> *djikstrasAlgorithm(Graph *graph, Node* start, Node *target) {
   while(queue->size() > 0) {
     const Node *u = popMinNode(queue);
 
-    cout << "U: " << ((Node *) u)->loc.toString() << " neighbors = " << graph->getNeighbors(u)->size() << endl;
+    ////cout << "U: " << ((Node *) u)->loc.toString() << " neighbors = " << graph->getNeighbors(u)->size() << endl;
 
     vector<Edge *> *neighbors = graph->getNeighbors(u);
     for(int i = 0; i < neighbors->size(); i++) {
       Edge *neighborEdge = (*neighbors)[i];
       double alt = u->dist + neighborEdge->cost;
-      cout << "----ALT " << alt << " = "  << u->dist << " + " << neighborEdge->cost << "; " << neighborEdge->dest->toString() << endl;
+      //cout << "----ALT " << alt << " = "  << u->dist << " + " << neighborEdge->cost << "; " << neighborEdge->dest->toString() << endl;
       if(alt < neighborEdge->dest->dist) {
         neighborEdge->dest->dist = alt;
         //queue.updateDist(neighborEdge->dest, neighborEdge->dest->dist);
-        cout << "ALT " << neighborEdge->dest->loc.toString() << " <- " << ((Node *)u)->loc.toString() << endl;
+        //cout << "ALT " << neighborEdge->dest->loc.toString() << " <- " << ((Node *)u)->loc.toString() << endl;
         neighborEdge->dest->prev = (Node *) u;
       }
     }
@@ -264,37 +269,38 @@ vector<Loc> *djikstrasAlgorithm(Graph *graph, Node* start, Node *target) {
     if(u == target) {
       
       for(Node *n = (Node *) u; n != NULL; n = n->prev) {
-        points->push_back(n->loc);
+        points->insert(points->begin(), n->loc);
       }
-      cout << "Points:" <<endl;
+      //cout << "Points:" <<endl;
       for(int i = 0; i < points->size(); i++) {
-        cout << (*points)[i].toString() << " ";
+        //cout << (*points)[i].toString() << " ";
       }
-      cout << endl;
-      cout << "TAARGET: " << points->size() << " " << (u == NULL) << endl;
+      //cout << endl;
+      //cout << "Target: " << target->loc.toString() << endl;
+      ////cout << "TAARGET: " << points->size() << " " << (u == NULL) << endl;
       return points;
     }
   }
-  cout << "GRAPH: " << endl;
-  cout << graph->toString() << endl;
-  cout << endl << "Start " << start->toString() << endl;
-  cout << "Target " << target->toString() << endl;
-  cout << "NODES" << endl;
+  //cout << "GRAPH: " << endl;
+  //cout << graph->toString() << endl;
+  //cout << endl << "Start " << start->toString() << endl;
+  //cout << "Target " << target->toString() << endl;
+  //cout << "NODES" << endl;
   for(int i = 0; i < graph->nodes.size(); i++) {
-    cout << graph->nodes[i]->toString() << ", " << graph->nodes[i]->dist << " " << (graph->nodes[i]->prev != NULL);
+    //cout << graph->nodes[i]->toString() << ", " << graph->nodes[i]->dist << " " << (graph->nodes[i]->prev != NULL);
     if(Loc::sameLoc(graph->nodes[i]->loc, target->loc)) {
-      cout << "  <------- Target";
+      //cout << "  <------- Target";
     }
     else if(Loc::sameLoc(graph->nodes[i]->loc, start->loc)) {
-      cout << "  <------- Start";
+      //cout << "  <------- Start";
     }
-    cout << endl;
+    //cout << endl;
   }
 
-  // cout << "fail" << (start == NULL) << " " << (target == NULL) << endl;
-  // cout << "     FAiled to run thru all points for " << start->loc.toString() << " to " << target->loc.toString() << endl;
+  // //cout << "fail" << (start == NULL) << " " << (target == NULL) << endl;
+  // //cout << "     FAiled to run thru all points for " << start->loc.toString() << " to " << target->loc.toString() << endl;
   // for(int i = 0; i < graph->nodes.size(); i++) {
-  //   cout << "     " << graph->nodes[i]->loc.toString() << endl;
+  //   //cout << "     " << graph->nodes[i]->loc.toString() << endl;
   // }
 
   //exit(0);
@@ -307,7 +313,7 @@ vector<Loc> *createNaiveDjikstraRoute(InnerWorld *innerWorld, Loc target) {
   if(!innerWorld->isCrossable(innerWorld->botLoc()) || !innerWorld->isCrossable(target)) {
     int botx = innerWorld->botLoc().x;
     int boty = innerWorld->botLoc().y;
-    cout << "Support not available" << innerWorld->map->grid[botx][boty]->name << " at " << innerWorld->botLoc().toString() << endl;
+    //cout << "Support not available" << innerWorld->map->grid[botx][boty]->name << " at " << innerWorld->botLoc().toString() << endl;
     return points;
   }
   Node* start;

@@ -31,3 +31,12 @@ use multiple threads in graphics
 make select block a field on the bloc to make drawing easier
 
 anim should have reference to its name
+
+make plots, list of plots that clear out after each bot update. rendered as small dot on screen. list of double locs, lets u see more fine grained points
+
+figure out better way to compare locs than copying operator< to every file
+
+use cLion ide, CUDA for parallel stuff, maybe make game about bots fighting in space, like io
+
+bots / ai should get separate thread to better handle their control flow
+

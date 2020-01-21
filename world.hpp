@@ -7,6 +7,7 @@
 #include "loc.hpp"
 #include "block.hpp"
 #include "timer.hpp"
+#include <pthread.h>
 
 #define DEFAULT_ZOOM 3
 #define DEFAULT_SEED 1
@@ -37,7 +38,16 @@ class Viewer {
     Viewer(World *world);
 };
 
-class World
+class DynamicResource {
+  public:
+    pthread_mutex_t rsrcLock;
+    void lock();
+    void unlock();
+    bool locked;
+    DynamicResource();
+};
+
+class World : public DynamicResource
 {
   public:
 
@@ -58,7 +68,6 @@ class World
     vector<Loc> *createResources(BlockType resourceType, BlockType surroundingType, double cutoff, int seed, double freq, int depth);
     void generateBots();
     void update();
-    bool isCrossable(BlockType type);
     bool isCrossable(Loc loc);
 };
 #endif

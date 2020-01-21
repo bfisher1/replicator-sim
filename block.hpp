@@ -19,6 +19,7 @@ enum BlockType {
   iron,
   nickel,
   silicon,
+  bedrock,
   unknown
 };
 
@@ -29,7 +30,18 @@ class Block {
     Anim *anim;
     Block(BlockType type, string name);
     Block();
+    //todo crossable should be shared by all blocks of a class
+    bool crossable;
     void draw(int screenX, int screenY, int scale);
+    virtual void replacementOf(Block *block);
+};
+
+// block that is on top of another block
+class OverlyingBlock : public Block {
+  public:
+    Block *below = NULL;
+    void replacementOf(Block *block) override;
+    OverlyingBlock(BlockType type, string name);
 };
 
 enum TreeAge {
@@ -41,13 +53,13 @@ enum TreeAge {
   stump
 };
 
-class TreeBlock : public Block {
+class TreeBlock : public OverlyingBlock {
   public:
     TreeAge age;
     time_t lastAgeUpdate;
     void ageTree();
     TreeBlock();
-    void drawTree(int screenX, int screenY, int scale);
+    void drawTree(int screenX, int screenY, int belowY, int scale);
 };
 
 class StoneBlock : public Block {
@@ -89,6 +101,11 @@ class NickelBlock : public Block {
 class SiliconBlock : public Block {
   public:
     SiliconBlock();
+};
+
+class BedrockBlock : public Block {
+  public:
+    BedrockBlock();
 };
 
 class UnknownBlock : public Block {

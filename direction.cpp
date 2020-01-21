@@ -19,3 +19,16 @@ Direction angleToDir(double angle) {
     return Direction::left;
   }
 }
+
+Loc addVectorToLoc(Loc origin, double dist, Direction dir) {
+  switch(dir) {
+    case Direction::up:
+      return origin.plus(Loc(0, -dist));
+    case Direction::down:
+      return origin.plus(Loc(0, dist));
+    case Direction::left:
+      return origin.plus(Loc(-dist, 0));
+    case Direction::right:
+      return origin.plus(Loc(dist, 0));
+  }
+}

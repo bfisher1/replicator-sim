@@ -20,6 +20,10 @@ double randNorm() {
   return (float) rand() / (float) RAND_MAX;
 }
 
+double randRange(double start, double end) {
+  return start + (end - start) * randNorm();
+}
+
 // using code from: https://www.geeksforgeeks.org/c-program-list-files-sub-directories-directory/
 vector<string> *getFileNamesInPath(string dir) {
   vector<string> *fileNames = new vector<string>();

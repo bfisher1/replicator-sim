@@ -84,6 +84,15 @@ Color *backGroundOf(string animName) {
     else if(strcmp(animName.data(), "select-green.png") == 0) {
         return &red;
     }
+    else if(strcmp(animName.data(), "select-red.png") == 0) {
+        return &white;
+    }
+    else if(strcmp(animName.data(), "plot-red.png") == 0) {
+        return &white;
+    }
+    else if(strcmp(animName.data(), "plot-blue.png") == 0) {
+        return &white;
+    }
     return NULL;
 }
 
@@ -96,6 +105,7 @@ map<string, Anim*> *loadAnims(SDL_Surface *screen) {
     for(int i = 0; i < names->size(); i++) {
     if(stringEndsWith((*names)[i], ".png")) {
         string fileDir = string("./anims/") + string((*names)[i]);
+        cout << "LOADING " << fileDir << endl;
         (*anims)[(*names)[i]] = loadAnim((char *) fileDir.data(), 1, 1, screen, backGroundOf((*names)[i]));
         }
     }

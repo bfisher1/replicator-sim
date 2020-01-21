@@ -1,20 +1,45 @@
 #include "block.hpp"
 
+
 Block::Block(BlockType t, string n) {
+  crossable = false;
   type = t;
   name = n;
 }
 
 Block::Block() {
-  //
+  type = unknown;
+  name = "unknown";
+  crossable = false;
 }
 
 void Block::draw(int screenX, int screenY, int scale) {
   drawStillFrame(anim, screenX, screenY, 0, false);
+  // if(selected) {
+  //   drawStillFrame(getAnim("select-red.png"), screenX, screenY, 0, false);
+  // }
+}
+
+void Block::replacementOf(Block *block) {
+  // destroy old block in general case
 }
 
 
-void TreeBlock::drawTree(int screenX, int screenY, int scale) {
+void OverlyingBlock::replacementOf(Block *block) {
+  below = block;
+}
+
+OverlyingBlock::OverlyingBlock(BlockType type, string name)
+    : Block(type, name){
+  //
+}
+
+void TreeBlock::drawTree(int screenX, int screenY, int belowY, int scale) {
+  // draw block underneath it
+  if(below != NULL) {
+    below->draw(screenX, belowY, scale);
+  }
+
   Anim *treeAnim = NULL;
   switch(age) {
     case TreeAge::young:
@@ -35,7 +60,7 @@ void TreeBlock::drawTree(int screenX, int screenY, int scale) {
 
 
 TreeBlock::TreeBlock()
-      : Block(BlockType::tree, "tree") {
+      : OverlyingBlock(BlockType::tree, "tree") {
   age = TreeAge::young;
 }
 
@@ -70,10 +95,12 @@ CopperBlock::CopperBlock()
 
 AirBlock::AirBlock()
       : Block(BlockType::air, "air") {
+        crossable = true;
 }
 
 SandBlock::SandBlock()
       : Block(BlockType::sand, "sand") {
+        crossable = true;
 }
 
 ZincBlock::ZincBlock()
@@ -92,8 +119,14 @@ SiliconBlock::SiliconBlock()
       : Block(BlockType::silicon, "silicon") {
 }
 
+BedrockBlock::BedrockBlock()
+      : Block(BlockType::bedrock, "bedrock") {
+}
+
+
 UnknownBlock::UnknownBlock()
       : Block(BlockType::unknown, "unknown") {
+        crossable = true;
 }
 
 Block *newblockFromType(BlockType type) {
@@ -120,6 +153,8 @@ Block *newblockFromType(BlockType type) {
       return new NickelBlock();
     case BlockType::silicon:
       return new SiliconBlock();
+    case BlockType::bedrock:
+      return new BedrockBlock();
     case BlockType::unknown:
       return new UnknownBlock();
     default:

@@ -13,6 +13,8 @@ class Loc {
     Loc();
     static void setBoundingBox(Loc src, Loc target, Loc& topLeft, Loc& bottomRight);
     static bool sameLoc(Loc loc1, Loc loc2);
+    static bool distWithin(Loc loc1, Loc loc2, double dist);
+    static double dist(Loc loc1, Loc loc2);
     string toString();
     Loc plus(Loc loc);
 };

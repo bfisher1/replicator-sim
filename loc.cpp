@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <math.h>
 
 Loc::Loc(const Loc &other) {
   x = other.x;
@@ -33,6 +34,17 @@ string Loc::toString() {
   return string(locBuffer);
 }
 
+bool Loc::distWithin(Loc loc1, Loc loc2, double dist) {
+  return Loc::dist(loc1, loc2) <= dist;
+}
+
+double Loc::dist(Loc loc1, Loc loc2) {
+  double dx = loc1.x - loc2.x;
+  double dy = loc1.y - loc2.y;
+  return sqrt(dx * dx + dy * dy);
+}
+
 Loc Loc::plus(Loc loc) {
+  cout << Loc(loc.x + x, loc.y + y).toString() << endl;
   return Loc(loc.x + x, loc.y + y);
 }
