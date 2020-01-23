@@ -40,3 +40,6 @@ use cLion ide, CUDA for parallel stuff, maybe make game about bots fighting in s
 
 bots / ai should get separate thread to better handle their control flow
 
+make blocks have left top corner drawn at start of coordinate
+
+fix block in front of detector to use simple ray that touches on sides, not full blown radius checker
