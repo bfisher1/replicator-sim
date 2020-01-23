@@ -97,11 +97,14 @@ bool World::isCrossable(Loc loc) {
 
 
 void updateTrees(World *world) {
+  cout << "Updating trees" << endl;
+  world->lock();
   for(auto it = world->trees->begin(); it != world->trees->end(); it++) {
     if(randNorm() <= TREE_AGE_CHANCE) {
       it->second->ageTree();
     }
   }
+  world->unlock();
 }
 
 void setBlockAnims(World *world) {
@@ -156,7 +159,7 @@ World::World(int w, int h) {
 
   //interval events
   timerBus = new IntervalExecutorBus(this);
-  //timerBus->addIntervalExecutor(TREE_AGE_INTERVAL, updateTrees);
+  timerBus->addIntervalExecutor(TREE_AGE_INTERVAL, updateTrees);
 
 
   // set initial block animations

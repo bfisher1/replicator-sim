@@ -28,7 +28,8 @@ InnerWorld::InnerWorld(World *world, Bot *b) {
 }
 
 void InnerWorld::draw(SDL_Surface *screen) {
-  cout << "Is null " << endl << (self == NULL) << "..." << endl;
+  cout << "drawing inner world" << endl;
+  // cout << "Is null " << endl << (self == NULL) << "..." << endl;
   map->draw(screen);
 
   // drawRect(screen, self->x * map->zoom, self->y * map->zoom, map->zoom, map->zoom, (Color) {255, 0, 0});

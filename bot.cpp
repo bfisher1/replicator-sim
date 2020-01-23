@@ -28,8 +28,10 @@ void *execBot(void *arg) {
 
 void Bot::exec() {
   while(true) {
-    //update();
+    cout << "-            Updatiing" << dir << endl;
     dir += .00000001;
+    update();
+    
   }
 }
 
@@ -191,6 +193,9 @@ void move(Bot *bot) {
 }
 
 void Bot::update() {
+
+  updateBlocksInVision();
+  return;
   innerWorld->plots = new vector<Loc>();
   innerWorld->highLightPlots = new set<int>();
   time_t now;
@@ -200,9 +205,9 @@ void Bot::update() {
     innerWorld->lastUpdate = now;
     wanderUpdateMove(this);
   }
+  
   //exploreUpdateMove(this);
   move(this);
-  updateBlocksInVision();
   // innerWorld->target = Loc(10, 10);
   // innerWorld->map->select(innerWorld->target, true);
   return;
